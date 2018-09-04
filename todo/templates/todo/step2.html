@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+  </head>
+
+  <body>
+    <h1>My Todo List</h1>
+    <div id="app">
+      <ul v-cloak v-for="item in todos">
+        <li v-on:click="changeStatus(item)">
+          <span style="text-decoration: line-through; color: red" v-if="item.done">
+            [[ item.task ]]
+            ([[ item.due.getMonth()+1 ]]/[[ item.due.getDate() ]])
+          </span>
+          <span v-else>
+            [[ item.task ]]
+            ([[ item.due.getMonth()+1 ]]/[[ item.due.getDate() ]])
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script>
+
+var vm = new Vue({
+  delimiters: ['[[', ']]'],
+  el: '#app',
+  data: {
+    todos: []
+  },
+  mounted: function() {
+    {% for item in todos %}
+    this.todos.push({    /* vm.todos.push() does not work */
+      "task": "{{ item.task }}",
+      "due": new Date({{ item.due|date:'U' }} * 1000),
+      "done": {{ item.done|lower }},
+    })
+    {% endfor %}
+  },
+  methods: {
+    changeStatus: function(item) {
+      item.done = !item.done;
+    }
+  }
+})
+
+    </script>
+  </body>
+</html>

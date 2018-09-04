@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+  </head>
+
+  <body>
+    <h1>My Todo List</h1>
+    <div>
+      <ul>
+        {% for item in todos %}
+          <li>
+            {% if item.done %}
+              <span style="text-decoration: line-through; color: red">
+                {{ item.task }}
+                ({{ item.due|date:"n" }}/{{ item.due|date:"j" }})
+              </span>
+            {% else %}
+              <span>
+                {{ item.task }}
+                ({{ item.due|date:"n" }}/{{ item.due|date:"j" }})
+              </span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <form method="post" action="{% url 'todo:step4' %}">{% csrf_token %}
+        {{ form }}
+        <button type="submit" >Add</button>
+      </form>
+    </div>
+  </body>
+</html>

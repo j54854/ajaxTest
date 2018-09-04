@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+  </head>
+
+  <body>
+    <h1>My Todo List</h1>
+    <div id="app">
+      <ul v-cloak v-for="item in todos">
+        <li v-on:click="changeStatus(item)">
+          <span style="text-decoration: line-through; color: red" v-if="item.done">
+            [[ item.task ]]
+            ([[ item.due.getMonth()+1 ]]/[[ item.due.getDate() ]])
+          </span>
+          <span v-else>
+            [[ item.task ]]
+            ([[ item.due.getMonth()+1 ]]/[[ item.due.getDate() ]])
+          </span>
+        </li>
+      </ul>
+      <hr>
+      <form v-on:submit.prevent="addTask">
+        <label for="task">Task:</label>
+        <input type="text" id="task" v-model="new_task">
+        <label for="due">Due:</label>
+        <input type="date" id="due" v-model="its_due">
+        <button type="submit" >Add</button>
+      </form>
+    </div>
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+
+var vm = new Vue({
+  delimiters: ['[[', ']]'],
+  el: '#app',
+  data: {
+    todos: [],
+    new_task: "",
+    its_due: ""
+  },
+  mounted: function() {
+    axios.get('{% url "todo:get_todo" %}')
+      .then(function (response) {
+        for(var d in response.data) {
+          var item = response.data[d];
+          item.due = new Date(item.due);
+          vm.todos.push(item);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .then(function () {
+      });
+    },
+  methods: {
+    changeStatus: function(item) {
+      item.done = !item.done;
+      this.updateDB(item);
+    },
+    addTask: function() {
+      if(this.new_task && this.its_due){
+        item = {
+          "task":this.new_task,
+          "due": new Date(this.its_due),
+          "done":false
+        };
+        this.todos.push(item);
+        this.updateDB(item);
+      }
+      this.task = "";
+      this.due = "";
+    },
+    updateDB: function(item) {
+      csrftoken = Cookies.get('csrftoken');
+      headers = {'X-CSRFToken': csrftoken};
+      data = {
+          "task":item.task,
+          "due": new Date(item.due),
+          "done":item.done
+        };
+      axios.post('{% url "todo:post_todo" %}', data, {headers: headers})
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }
+})
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+  </head>
+
+  <body>
+    <h1>My Todo List</h1>
+    <div>
+      <ul>
+        {% for item in todos %}
+          <li>
+            {% if item.done %}
+              <span style="text-decoration: line-through; color: red">
+                {{ item.task }}
+                ({{ item.due|date:"n" }}/{{ item.due|date:"j" }})
+              </span>
+            {% else %}
+              <span>
+                {{ item.task }}
+                ({{ item.due|date:"n" }}/{{ item.due|date:"j" }})
+              </span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>
