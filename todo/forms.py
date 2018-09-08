@@ -1,10 +1,12 @@
 from django import forms
+import datetime
 from . import models
 
 class TodoForm(forms.Form):
     task = forms.CharField(max_length=255)
     due = forms.DateTimeField(
-        widget=forms.DateTimeInput(format="%Y/%m/%d")
+        widget=forms.DateTimeInput(format="%Y-%m-%d"),
+        initial = datetime.date.today()
         )
 
     def save(self):

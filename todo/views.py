@@ -14,12 +14,13 @@ def step1or2(request, num):
 
 
 def step4(request):
-    form = forms.TodoForm()
     if request.method == "POST":
         form = forms.TodoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("todo:step1")
+            return redirect("todo:step1or2", num=1)
+    else:
+        form = forms.TodoForm()
     todos = models.Todo.objects.all().order_by("due")
     my_context = {
         "form":form,
