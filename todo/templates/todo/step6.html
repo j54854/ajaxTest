@@ -64,7 +64,7 @@ var vm = new Vue({
     },
     addTask: function() {
       if(this.new_task && this.its_due){
-        item = {
+        var item = {
           "task":this.new_task,
           "due": new Date(this.its_due),
           "done":false
@@ -76,9 +76,9 @@ var vm = new Vue({
       this.due = "";
     },
     updateDB: function(item) {
-      csrftoken = Cookies.get('csrftoken');
-      headers = {'X-CSRFToken': csrftoken};
-      data = {
+      var csrftoken = Cookies.get('csrftoken');
+      var headers = {'X-CSRFToken': csrftoken};
+      var data = {
           "task":item.task,
           "due": new Date(item.due),
           "done":item.done
