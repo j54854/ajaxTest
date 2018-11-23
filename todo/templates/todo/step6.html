@@ -72,8 +72,8 @@ var vm = new Vue({
         this.todos.push(item);
         this.updateDB(item);
       }
-      this.task = "";
-      this.due = "";
+      this.new_task = "";
+      this.its_due = "";
     },
     updateDB: function(item) {
       var csrftoken = Cookies.get('csrftoken');
